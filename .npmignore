@@ -1,0 +1,34 @@
+# Source files
+*.ts
+!*.d.ts
+
+# Configuration files
+rollup.config.js
+tsconfig.json
+.editorconfig
+.prettierrc*
+
+# Dependencies
+node_modules/
+
+# Build artifacts (but keep dist)
+*.log
+.DS_Store
+.vscode/
+.idea/
+
+# Test files
+test/
+tests/
+*.test.ts
+*.spec.ts
+__tests__/
+
+# Documentation (keep README.md if you want it in the package)
+*.md
+!README.md
+
+# Misc
+.cache/
+.npm/
+.eslintcache
