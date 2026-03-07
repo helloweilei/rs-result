@@ -4,6 +4,7 @@
 
 # Configuration files
 rollup.config.js
+vitest.config.ts
 tsconfig.json
 .editorconfig
 .prettierrc*

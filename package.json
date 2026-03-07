@@ -1,6 +1,6 @@
 {
   "name": "@lei.wei/rs-result",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A Rust style Result type library for TypeScript",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -36,7 +36,6 @@
   "license": "ISC",
   "devDependencies": {
     "@rollup/plugin-node-resolve": "^15.2.3",
-    "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^11.1.6",
     "@vitest/ui": "^4.0.18",
     "tslib": "^2.8.1",
