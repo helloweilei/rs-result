@@ -125,7 +125,7 @@ class OkImpl<T, E> implements Result<T, E> {
     }
 }
 
-export class ErrImpl<T, E> implements Result<T, E> {
+class ErrImpl<T, E> implements Result<T, E> {
     private error: E;
     constructor(error: E) {
         this.error = error;

@@ -10,6 +10,7 @@ export default [
       format: 'es',
       sourcemap: false,
     },
+    external: ['rs-option'],
     plugins: [
       nodeResolve(),
       typescript({ tsconfig: './tsconfig.json' }),
@@ -24,6 +25,7 @@ export default [
       sourcemap: false,
       exports: 'named',
     },
+    external: ['rs-option'],
     plugins: [
       nodeResolve(),
       typescript({ tsconfig: './tsconfig.json' }),
