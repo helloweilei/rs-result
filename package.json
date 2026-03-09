@@ -1,6 +1,6 @@
 {
   "name": "@lei.wei/rs-result",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "A Rust style Result type library for TypeScript",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",

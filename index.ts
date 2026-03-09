@@ -3,6 +3,8 @@ import { Option, Some, None } from 'rs-option';
 export interface Result<T, E> {
     isOk(): boolean;
     isErr(): boolean;
+    isOkAnd(predicate: (value: T) => boolean): boolean;
+    isErrAnd(predicate: (error: E) => boolean): boolean;
     ok(): Option<T>;
     err(): Option<E>;
     map<U>(op: (value: T) => U): Result<U, E>;
@@ -36,6 +38,14 @@ class OkImpl<T, E> implements Result<T, E> {
     }
 
     isErr(): boolean {
+        return false;
+    }
+
+    isOkAnd(predicate: (value: T) => boolean): boolean {
+        return predicate(this.value);
+    }
+
+    isErrAnd(_predicate: (error: E) => boolean): boolean {
         return false;
     }
 
@@ -137,6 +147,14 @@ class ErrImpl<T, E> implements Result<T, E> {
 
     isErr(): boolean {
         return true;
+    }
+
+    isOkAnd(_predicate: (value: T) => boolean): boolean {
+        return false;
+    }
+
+    isErrAnd(predicate: (error: E) => boolean): boolean {
+        return predicate(this.error);
     }
 
     ok(): Option<never> {

@@ -74,6 +74,26 @@ const result = Err('error');
 result.isErr(); // true
 ```
 
+#### `isOkAnd(predicate: (value: T) => boolean): boolean`
+
+Returns `true` if the result is `Ok` and the value inside of it matches a predicate.
+
+```typescript
+Ok(42).isOkAnd(x => x > 40); // true
+Ok(42).isOkAnd(x => x > 50); // false
+Err('error').isOkAnd(x => x > 40); // false
+```
+
+#### `isErrAnd(predicate: (error: E) => boolean): boolean`
+
+Returns `true` if the result is `Err` and the error inside of it matches a predicate.
+
+```typescript
+Err('error').isErrAnd(e => e.length > 3); // true
+Err('error').isErrAnd(e => e.length > 10); // false
+Ok(42).isErrAnd(e => e.length > 3); // false
+```
+
 #### `ok(): Option<T>`
 
 Converts to `Option<T>`, discarding the error value if present.
@@ -145,36 +165,70 @@ result.unwrapErr(); // 'ERROR'
 
 Returns `res` if the result is `Ok`, otherwise returns the `Err` value of `self`.
 
+This function is useful for performing a sequence of operations where each operation can fail, but you want to continue only if all operations succeed. If any operation fails, the entire sequence returns the first error.
+
 ```typescript
 Ok(2).and(Ok('foo')); // Ok('foo')
 Err('early error').and(Ok('foo')); // Err('early error')
+Ok(2).and(Err('late error')); // Err('late error')
 ```
 
 #### `andThen<U>(op: (value: T) => Result<U, E>): Result<U, E>`
 
 Calls `op` if the result is `Ok`, otherwise returns the `Err` value of `self`.
 
+This function is used for sequencing operations where each operation produces a `Result` and depends on the previous operation's success. It's commonly used for validation chains or pipelined operations.
+
 ```typescript
 Ok(2).andThen(x => Ok(x * 2)); // Ok(4)
 Err('error').andThen(x => Ok(x * 2)); // Err('error')
+
+// Real-world example: validation chain
+function validateAge(age: number): Result<number, string> {
+  return age >= 18 ? Ok(age) : Err('Age must be at least 18');
+}
+
+function formatResult(age: number): Result<string, string> {
+  return Ok(`Valid age: ${age}`);
+}
+
+Ok(21).andThen(validateAge).andThen(formatResult); // Ok('Valid age: 21')
+Ok(15).andThen(validateAge).andThen(formatResult); // Err('Age must be at least 18')
 ```
 
 #### `or<F>(res: Result<T, F>): Result<T, F>`
 
 Returns `self` if it contains `Ok`, otherwise returns `res`.
 
+This function is used for providing fallback `Result` values. Unlike `and`, `or` is used when you want to provide an alternative result if the current result is an error.
+
 ```typescript
 Ok(2).or(Err('late error')); // Ok(2)
 Err('early error').or(Ok('foo')); // Ok('foo')
+Err('early error').or(Err('fallback')); // Err('fallback')
 ```
 
 #### `orElse<F>(op: (error: E) => Result<T, F>): Result<T, F>`
 
 Calls `op` if the result is `Err`, otherwise returns the `Ok` value of `self`.
 
+This function provides a way to handle errors by transforming them into other `Result` values. Unlike `or`, `orElse` receives the error value and can decide what `Result` to return based on it.
+
 ```typescript
 Ok(2).orElse(() => Ok('foo')); // Ok(2)
-Err('error').orElse(() => Err('fallback')); // Err('fallback')
+Err('error').orElse(() => Ok('fallback')); // Ok('fallback')
+Err('error').orElse(e => Err(`Fallback: ${e}`)); // Err('Fallback: error')
+
+// Real-world example: error recovery
+function retryOrFallback(error: string): Result<number, string> {
+  if (error.includes('network')) {
+    return Ok(0); // Return default value on network error
+  }
+  return Err(error); // Propagate other errors
+}
+
+Err('network timeout').orElse(retryOrFallback); // Ok(0)
+Err('invalid input').orElse(retryOrFallback); // Err('invalid input')
 ```
 
 ### Unwrapping Values
